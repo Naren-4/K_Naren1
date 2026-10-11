@@ -19,3 +19,10 @@ const intro=document.getElementById('intro');document.body.classList.add('no-scr
 let skullClicks=0,toastTimer;const toast=document.getElementById('toast');document.getElementById('secretSkull').addEventListener('click',()=>{skullClicks++;if(skullClicks>=3){toast.textContent='I’M GONNA BE KING OF THE PIRATES! ☠';toast.classList.add('show');skullClicks=0;clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),3200)}else{toast.textContent='The Grand Line hides secrets… ('+skullClicks+'/3)';toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),1300)}});
 // Reveal chapter panels only as they enter the viewport, with a safe fallback.
 if('IntersectionObserver'in window){const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('in-view');observer.unobserve(entry.target)}}),{threshold:.08});document.querySelectorAll('.section,.chapter-card').forEach(el=>observer.observe(el))}
+
+// Theme switch: persist preference where browser storage is available.
+const themeToggle=document.getElementById('themeToggle');
+const themeMeta=document.getElementById('themeColorMeta');
+function applyTheme(theme){const light=theme==='light';document.body.classList.toggle('light-theme',light);if(themeToggle){themeToggle.setAttribute('aria-label',light?'Switch to dark theme':'Switch to light theme');themeToggle.title=light?'Switch to dark theme':'Switch to light theme';const icon=themeToggle.querySelector('.theme-icon');const label=themeToggle.querySelector('.theme-label');if(icon)icon.textContent=light?'☾':'☀';if(label)label.textContent=light?'DARK MODE':'LIGHT MODE'}if(themeMeta)themeMeta.setAttribute('content',light?'#f3efe5':'#08090b');}
+let savedTheme='dark';try{savedTheme=localStorage.getItem('grandLineTheme')||'dark'}catch(e){}applyTheme(savedTheme);
+if(themeToggle)themeToggle.addEventListener('click',()=>{const next=document.body.classList.contains('light-theme')?'dark':'light';applyTheme(next);try{localStorage.setItem('grandLineTheme',next)}catch(e){}});
